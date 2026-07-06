@@ -1,0 +1,13 @@
+# --- Core data ---
+pandas==2.3.3
+numpy==2.4.4
+matplotlib==3.10.8
+
+# --- Warehouse ---
+duckdb==1.5.4
+
+# --- Testing ---
+pytest==9.1.1
+
+# --- Production orchestration reference only (see dags/airflow_dag.py) ---
+# apache-airflow==3.0.0  # not installed/executed in this repo; see README

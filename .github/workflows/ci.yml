@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff black mypy pytest-cov
+
+      - name: Lint with ruff
+        run: ruff check src/ tests/ dags/
+
+      - name: Check formatting with black
+        run: black --check src/ tests/ dags/
+
+      - name: Validate Airflow DAG file compiles (syntax only -- Airflow itself is not installed)
+        run: python -m py_compile dags/airflow_dag.py
+
+      - name: Run tests with coverage
+        run: pytest tests/ -v --cov=src --cov-report=xml --cov-report=term
+
+      - name: Run the full pipeline end-to-end
+        run: python -m src.pipeline.dag
+
+      - name: Generate report
+        run: python -m src.pipeline.report
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: coverage.xml
+
+      - name: Upload pipeline artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-artifacts-${{ matrix.python-version }}
+          path: |
+            docs/*.json
+            docs/*.md
+            assets/*.png
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: marketing-analytics-pipeline:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

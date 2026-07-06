@@ -1,0 +1,14 @@
+data:
+  n_days: 60
+  n_campaigns_per_channel: 4
+  random_seed: 42
+  raw_dir: data/raw
+  db_path: data/warehouse/marketing.duckdb
+
+quality:
+  ad_spend_max_null_rate_clicks: 0.02
+  crm_max_null_rate_close_date: 0.0
+
+dag:
+  max_retries: 2
+  retry_delay_seconds: 1.0

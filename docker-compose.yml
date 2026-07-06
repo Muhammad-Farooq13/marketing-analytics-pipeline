@@ -1,0 +1,13 @@
+services:
+  etl-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: marketing-analytics-pipeline:latest
+    container_name: marketing-analytics-pipeline
+    volumes:
+      - ./data:/app/data
+      - ./docs:/app/docs
+      - ./assets:/app/assets
+    environment:
+      - PYTHONUNBUFFERED=1

@@ -1,0 +1,65 @@
+<svg width="720" height="480" viewBox="0 0 720 480" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Marketing analytics ELT pipeline architecture</title>
+<desc>Three synthetic source systems (ad spend CSV, web events JSON Lines, CRM sales CSV) are loaded into DuckDB staging tables, profiled by informational data quality checks, cleaned into an intermediate layer, aggregated into BI-ready mart tables, and gated by a second round of data quality checks that halt the pipeline on fatal failure. Orchestrated by a custom DAG runner, with an Airflow DAG provided as a production reference.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5f5e5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#2c2c2a;}
+.th{font-size:13px;font-weight:600;}
+.ts{font-size:11px;fill:#5f5e5a;}
+.box{fill:#f1efe8;stroke:#888780;stroke-width:0.5;}
+.teal{fill:#e1f5ee;stroke:#0f6e56;stroke-width:0.5;}
+.purple{fill:#eeedfe;stroke:#534ab7;stroke-width:0.5;}
+.coral{fill:#faece7;stroke:#993c1d;stroke-width:0.5;}
+.arr{stroke:#5f5e5a;stroke-width:1.2;fill:none;}
+</style>
+
+<rect x="20" y="30" width="140" height="50" rx="8" class="box"/>
+<text x="90" y="50" text-anchor="middle" class="th">ad_spend.csv</text>
+<text x="90" y="66" text-anchor="middle" class="ts">Synthetic, w/ DQ issues</text>
+
+<rect x="290" y="30" width="140" height="50" rx="8" class="box"/>
+<text x="360" y="50" text-anchor="middle" class="th">web_events.jsonl</text>
+<text x="360" y="66" text-anchor="middle" class="ts">Synthetic, w/ DQ issues</text>
+
+<rect x="560" y="30" width="140" height="50" rx="8" class="box"/>
+<text x="630" y="50" text-anchor="middle" class="th">crm_sales.csv</text>
+<text x="630" y="66" text-anchor="middle" class="ts">Synthetic, w/ DQ issues</text>
+
+<line x1="90" y1="80" x2="300" y2="120" class="arr" marker-end="url(#arrow)"/>
+<line x1="360" y1="80" x2="360" y2="120" class="arr" marker-end="url(#arrow)"/>
+<line x1="630" y1="80" x2="420" y2="120" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="230" y="120" width="260" height="50" rx="8" class="box"/>
+<text x="360" y="140" text-anchor="middle" class="th">DuckDB staging tables</text>
+<text x="360" y="156" text-anchor="middle" class="ts">stg_ad_spend, stg_web_events, stg_crm_sales</text>
+
+<line x1="360" y1="170" x2="360" y2="210" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="200" y="210" width="320" height="50" rx="8" class="teal"/>
+<text x="360" y="230" text-anchor="middle" class="th">Staging DQ checks (informational)</text>
+<text x="360" y="246" text-anchor="middle" class="ts">1/7 pass on raw data -- expected, non-gating</text>
+
+<line x1="360" y1="260" x2="360" y2="300" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="200" y="300" width="320" height="50" rx="8" class="purple"/>
+<text x="360" y="320" text-anchor="middle" class="th">Transform: intermediate -&gt; marts</text>
+<text x="360" y="336" text-anchor="middle" class="ts">dedupe, drop invalid, null orphan refs, aggregate</text>
+
+<line x1="360" y1="350" x2="360" y2="390" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="200" y="390" width="320" height="50" rx="8" class="coral"/>
+<text x="360" y="410" text-anchor="middle" class="th">Mart DQ checks (GATE)</text>
+<text x="360" y="426" text-anchor="middle" class="ts">5/5 pass -- pipeline halts if any fail</text>
+
+<rect x="20" y="120" width="150" height="320" rx="8" class="box" fill-opacity="0.4"/>
+<text x="95" y="140" text-anchor="middle" class="th">Custom DAGRunner</text>
+<text x="95" y="156" text-anchor="middle" class="ts">Verified, runs</text>
+<text x="95" y="172" text-anchor="middle" class="ts">in this repo</text>
+
+<rect x="550" y="120" width="150" height="320" rx="8" class="box" fill-opacity="0.4"/>
+<text x="625" y="140" text-anchor="middle" class="th">Airflow DAG</text>
+<text x="625" y="156" text-anchor="middle" class="ts">Production reference</text>
+<text x="625" y="172" text-anchor="middle" class="ts">(not executed here)</text>
+</svg>
