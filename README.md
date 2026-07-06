@@ -218,5 +218,5 @@ MIT — see [LICENSE](LICENSE).
 **Muhammad Farooq Shafi**
 Email: mfarooqsgafee333@gmail.com
 LinkedIn: https://www.linkedin.com/in/muhammadfarooqshafi/
-GitHub: `<YOUR_GITHUB_URL>`
+GitHub: https://github.com/Muhammad-Farooq13
 Facebook: https://www.facebook.com/profile.php?id=61575167257313
